@@ -11,7 +11,7 @@ A high-performance, responsive portfolio website built with a focus on optimizat
 
 ## 🛠️ Tech Stack
 * **Frontend:** HTML5, CSS3 (Flexbox/Grid), JavaScript (ES6)
-* **Tools:** VS Code, GitHub Pages, Google Analytics
+* **Tools:** VS Code, GitHub Pages
 
 ## 📸 Preview
 Visit the live site: [gregoropmann.otset.ee](https://gregoropmann.otset.ee)
@@ -42,7 +42,7 @@ Kõrge jõudlusega reageeriv portfoolio-veebisait, mille loomisel on keskendutud
 
 ## 🛠️ Tehnoloogiad
 * **Frontend:** HTML5, CSS3 (Flexbox/Grid), JavaScript (ES6)
-* **Tööriistad:** VS Code, GitHub Pages, Google Analytics
+* **Tööriistad:** VS Code, GitHub Pages
 
 ## 📸 Eelvaade
 Külasta veebisaiti: [gregoropmann.otset.ee](https://gregoropmann.otset.ee)
