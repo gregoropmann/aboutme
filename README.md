@@ -13,6 +13,10 @@ A high-performance, responsive portfolio website built with a focus on optimizat
 * **Frontend:** HTML5, CSS3 (Flexbox/Grid), JavaScript (ES6)
 * **Tools:** VS Code, GitHub Pages
 
+## Third-party embeds
+
+The portfolio embeds a YouTube introduction video, an itch.io game preview, a Google Forms contact form, and the portfolio banner script hosted on `gregoropmann.otset.ee`. These origins are explicitly allowlisted by the page Content Security Policy.
+
 ## 📸 Preview
 Visit the live site: [gregoropmann.otset.ee](https://gregoropmann.otset.ee)
 

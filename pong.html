@@ -183,15 +183,15 @@
         </div>
         
         <div class="mode-selector">
-            <button class="mode-btn active" onclick="setMode('pvp')">Player vs Player</button>
-            <button class="mode-btn" onclick="setMode('ai')">vs AI</button>
+            <button type="button" class="mode-btn active" data-mode="pvp">Player vs Player</button>
+            <button type="button" class="mode-btn" data-mode="ai">vs AI</button>
         </div>
 
         <div id="difficultyPanel" class="difficulty-selector">
             <span style="color: #666; align-self: center;">Difficulty:</span>
-            <button class="diff-btn active" onclick="setDifficulty('easy')">Easy</button>
-            <button class="diff-btn" onclick="setDifficulty('medium')">Medium</button>
-            <button class="diff-btn" onclick="setDifficulty('hard')">Hard</button>
+            <button type="button" class="diff-btn active" data-difficulty="easy">Easy</button>
+            <button type="button" class="diff-btn" data-difficulty="medium">Medium</button>
+            <button type="button" class="diff-btn" data-difficulty="hard">Hard</button>
         </div>
 
         <div id="aiLabel" class="ai-label"></div>
@@ -208,7 +208,7 @@
             <p><span class="key">Space</span> — Start / Pause</p>
         </div>
         
-        <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+        <button type="button" class="reset-btn" id="reset-btn">Reset Game</button>
     </div>
 
     <script>
@@ -284,14 +284,14 @@
             updateScore();
         }
 
-        function setMode(mode) {
+        function setMode(mode, button) {
             gameState.mode = mode;
             gameState.aiEnabled = mode === 'ai';
             resetGame();
             
             // Update UI
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            button.classList.add('active');
             
             // Show/hide difficulty selector
             const diffPanel = document.getElementById('difficultyPanel');
@@ -312,14 +312,14 @@
             modeDesc.textContent = mode === 'ai' ? 'Playing vs AI. Select difficulty.' : 'Two-player game. Press SPACE to start.';
         }
 
-        function setDifficulty(difficulty) {
+        function setDifficulty(difficulty, button) {
             gameState.difficulty = difficulty;
             updateAILabel();
             resetGame();
             
             // Update UI
             document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            button.classList.add('active');
         }
 
         function updateAILabel() {
@@ -479,6 +479,14 @@
             draw();
             requestAnimationFrame(gameLoop);
         }
+
+        document.querySelectorAll('[data-mode]').forEach(button => {
+            button.addEventListener('click', () => setMode(button.dataset.mode, button));
+        });
+        document.querySelectorAll('[data-difficulty]').forEach(button => {
+            button.addEventListener('click', () => setDifficulty(button.dataset.difficulty, button));
+        });
+        document.getElementById('reset-btn').addEventListener('click', resetGame);
 
         gameLoop();
     </script>
