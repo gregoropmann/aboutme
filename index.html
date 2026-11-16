@@ -11,6 +11,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
+<link rel="canonical" href="https://gregoropmann.otset.ee/">
 <meta name="description" content="Gregor Opmann – IT-huviline ja arvutiehitaja">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -26,6 +27,7 @@
 <meta name="twitter:title" content="Gregor Opmann – Portfoolio">
 <meta name="twitter:description" content="IT-huviline ja arvutiehitaja">
 <meta name="twitter:image" content="https://gregoropmann.otset.ee/images/favicon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self' https://docs.google.com; script-src 'self' https://gregoropmann.otset.ee; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-src https://www.youtube.com https://itch.io https://docs.google.com; connect-src 'self';">
 
 <script type="application/ld+json">
 {
@@ -91,7 +93,7 @@
   </ul>
 </nav>
 
-<button onclick="scrollToTop()" id="backToTop" title="Tagasi üles">↑</button>
+<button type="button" id="backToTop" title="Tagasi üles" aria-label="Tagasi üles">↑</button>
 
 <!-- ===== HEADER ===== -->
 <header>
@@ -102,15 +104,15 @@
     <p data-lang="et"><a href="https://gregoropmann-edu.otset.ee">IT-valdkond (VOCO ITS126)</a></p>
 <p data-lang="en" style="display:none;"><a href="https://gregoropmann-edu.otset.ee">Information Technology (VOCO ITS126)</a></p>
 
-    <button onclick="toggleDarkMode()" id="dark-mode-btn">
+    <button type="button" id="dark-mode-btn" aria-label="Lülita tume režiim">
         <span id="mode-icon">🌙</span> 
         <span id="mode-text" data-lang="et">Tume režiim</span>
         <span id="mode-text-en" data-lang="en" style="display:none;">Dark Mode</span>
     </button>
     
     <div class="language-switch">
-        <button onclick="setLanguage('et')">Eesti</button>
-        <button onclick="setLanguage('en')">English</button>
+        <button type="button" id="lang-et">Eesti</button>
+        <button type="button" id="lang-en">English</button>
     </div>
 </header>
 
@@ -453,7 +455,7 @@ I am a dedicated IT enthusiast and computer builder interested in the inner work
                 <img src="images/game.png" alt="Screenshot of my custom Python game project" loading="lazy">
             </figure>
           
-            <a href="https://github.com/gregoropmann/aboutme/raw/main/game.zip" style="text-decoration: none;">
+            <a href="https://github.com/gregoropmann-edu/aboutme/raw/main/game.zip" style="text-decoration: none;">
                 <button style="background-color: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; margin: 10px 0;">
                     Download .ZIP
                 </button>
@@ -467,7 +469,7 @@ I am a dedicated IT enthusiast and computer builder interested in the inner work
                 <img src="images/android_app.png" alt="Screenshot of installation of the Android app." loading="lazy">
             </figure>
 
-            <a href="https://github.com/gregoropmann/aboutme/raw/main/android_app.apk" style="text-decoration: none;">
+            <a href="https://github.com/gregoropmann-edu/aboutme/raw/main/android_app.apk" style="text-decoration: none;">
                 <button style="background-color: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; margin: 10px 0;">
                     Download .APK
                 </button>
@@ -527,14 +529,9 @@ I am a dedicated IT enthusiast and computer builder interested in the inner work
                     Otset.ee
                 </button>
             </a>
-            <a href="https://gregoropmann.otset.ee/otsetee/otsetee.html" style="text-decoration: none;">
-                <button style="background-color: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; margin: 10px 0;">
-                    Terve Artikkel/Whole Article
-                </button>
-            </a>
             <a href="https://geenius.delfi.ee/artikkel/120596170/16-aastane-it-huviline-leidis-lahenduse-vaiketootjate-ja-tanspordiameti-tulile" style="text-decoration: none;">
                 <button style="background-color: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; margin: 10px 0;">
-                    DigiGeenius Artikkel/Article
+                    Terve Artikkel/Whole Article
                 </button>
             </a>
         </div>
@@ -598,10 +595,10 @@ I am a dedicated IT enthusiast and computer builder interested in the inner work
     </div>
 
     <p data-lang="et">E-post: <strong>
-        <a href="mailto:opmanngregor@gmail.com" onclick="playMailSound(event)" style="color: inherit; text-decoration: none;">opmanngregor@gmail.com</a>
+        <a href="mailto:opmanngregor@gmail.com" class="mail-link">opmanngregor@gmail.com</a>
     </strong></p>
     <p data-lang="en" style="display:none;">Email: <strong>
-        <a href="mailto:opmanngregor@gmail.com" onclick="playMailSound(event)" style="color: inherit; text-decoration: none;">opmanngregor@gmail.com</a>
+        <a href="mailto:opmanngregor@gmail.com" class="mail-link">opmanngregor@gmail.com</a>
     </strong></p>
   <audio id="mailSound" preload="auto">
       <source src="sounds/yougotmail.mp3" type="audio/mpeg">
@@ -615,7 +612,7 @@ I am a dedicated IT enthusiast and computer builder interested in the inner work
 </div>
 
 <div class="share-container" style="text-align: center; margin-top: 15px;">
-    <button onclick="sharePortfolio()" id="share-btn" class="action-button">
+    <button type="button" id="share-btn" class="action-button" aria-describedby="share-msg">
         <span id="share-icon">🔗</span>
         <span data-lang="et">Jaga portfooliot</span>
         <span data-lang="en" style="display:none;">Share Portfolio</span>

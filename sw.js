@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gregor_opmann-portfolio-v3.9';
+const CACHE_NAME = 'gregor_opmann-portfolio-v3.10';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -46,8 +46,16 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      await Promise.all(
+        ASSETS_TO_CACHE.map(async (asset) => {
+          try {
+            await cache.add(asset);
+          } catch (error) {
+            console.warn(`Skipping unavailable cache asset: ${asset}`, error);
+          }
+        })
+      );
     })
   );
 });

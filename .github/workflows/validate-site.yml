@@ -21,6 +21,23 @@ jobs:
           import json
           import re
           from pathlib import Path
+          from html.parser import HTMLParser
+
+          class AssetParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.references = []
+                  self.media_errors = []
+
+              def handle_starttag(self, tag, attrs):
+                  attributes = dict(attrs)
+                  for name in ("href", "src"):
+                      if name in attributes:
+                          self.references.append(attributes[name])
+                  if tag == "img" and "alt" not in attributes:
+                      self.media_errors.append("Image is missing alt text")
+                  if tag == "iframe" and "title" not in attributes:
+                      self.media_errors.append("Iframe is missing a title")
 
           html = Path("index.html").read_text(encoding="utf-8")
           match = re.search(
@@ -38,5 +55,32 @@ jobs:
           if missing:
               raise SystemExit("Missing service-worker assets:\n" + "\n".join(missing))
 
-          print(f"Validated JSON-LD and {len(assets)} cached assets.")
+          parser = AssetParser()
+          for html_file in Path(".").glob("*.html"):
+              parser.feed(html_file.read_text(encoding="utf-8"))
+
+              for reference in parser.references:
+                  if (
+                      not reference
+                      or reference.startswith(("#", "http://", "https://", "mailto:", "tel:", "data:"))
+                  ):
+                      continue
+                  relative_path = reference.split("#", 1)[0].split("?", 1)[0]
+                  if not relative_path:
+                      continue
+                  target = (html_file.parent / relative_path).resolve()
+                  if not target.is_file():
+                      raise SystemExit(f"Broken local reference in {html_file}: {reference}")
+
+          if parser.media_errors:
+              raise SystemExit("\n".join(parser.media_errors))
+
+          css = Path("style.css").read_text(encoding="utf-8")
+          for reference in re.findall(r"url\(['\"]?([^'\")]+)", css):
+              if reference.startswith(("http://", "https://", "data:")):
+                  continue
+              if not (Path("style.css").parent / reference).is_file():
+                  raise SystemExit(f"Broken stylesheet reference: {reference}")
+
+          print(f"Validated JSON-LD, {len(assets)} cached assets, local references, and media labels.")
           PY
