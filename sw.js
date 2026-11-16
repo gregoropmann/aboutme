@@ -1,8 +1,9 @@
-const CACHE_NAME = 'gregor_opmann-portfolio-v3.8';
+const CACHE_NAME = 'gregor_opmann-portfolio-v3.10';
 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './app.js',
   './style.css',
   './manifest.json',
   './images/favicon.png',
@@ -12,7 +13,6 @@ const ASSETS_TO_CACHE = [
   './images/pc-build.png',
   './images/solar_powered_mini_fan.png',
   './images/line_follower.png',
-  './images/neofetch.png',
   './images/game.png',
   './sounds/yougotmail.mp3',
   './docs/loovtoo_kiituskiri.pdf',
@@ -26,7 +26,7 @@ const ASSETS_TO_CACHE = [
   './terminal.html',
   './images/webb.png',
   './images/webb-dark.png',
-  './images/dark.paths.png',
+  './images/dark-paths.png',
   './images/profile.png',
   './images/pov-fedora.png',
   './images/404.png',
@@ -41,14 +41,21 @@ const ASSETS_TO_CACHE = [
   './banner.js',
   './robots.txt',
   './sitemap.xml',
-  './.github/workflows/update-sitemap.yml',
 ];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      await Promise.all(
+        ASSETS_TO_CACHE.map(async (asset) => {
+          try {
+            await cache.add(asset);
+          } catch (error) {
+            console.warn(`Skipping unavailable cache asset: ${asset}`, error);
+          }
+        })
+      );
     })
   );
 });
