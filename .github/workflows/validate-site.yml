@@ -1,0 +1,42 @@
+name: Validate site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate structured data and cached assets
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          html = Path("index.html").read_text(encoding="utf-8")
+          match = re.search(
+              r'<script type="application/ld\+json">\s*(.*?)\s*</script>',
+              html,
+              re.DOTALL,
+          )
+          if not match:
+              raise SystemExit("No JSON-LD block found")
+          json.loads(match.group(1))
+
+          service_worker = Path("sw.js").read_text(encoding="utf-8")
+          assets = re.findall(r"^\s*['\"](\./[^'\"]+)['\"],?$", service_worker, re.MULTILINE)
+          missing = [asset for asset in assets if not (Path(".") / asset[2:]).is_file()]
+          if missing:
+              raise SystemExit("Missing service-worker assets:\n" + "\n".join(missing))
+
+          print(f"Validated JSON-LD and {len(assets)} cached assets.")
+          PY

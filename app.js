@@ -146,16 +146,42 @@ async function sharePortfolio() {
     try {
         if (navigator.share) {
             await navigator.share(shareData);
-        } else {
-            await navigator.clipboard.writeText('https://gregoropmann.otset.ee');
-            msgEl.innerText = lang === 'et' ? 'Link kopeeritud lõikelauale!' : 'Link copied to clipboard!';
-            msgEl.style.opacity = '1';
-            
-            setTimeout(() => {
-                msgEl.style.opacity = '0';
-            }, 2000);
+            return;
         }
+
+        const copied = await copyToClipboard(shareData.url);
+        msgEl.innerText = copied
+            ? (lang === 'et' ? 'Link kopeeritud lõikelauale!' : 'Link copied to clipboard!')
+            : (lang === 'et' ? 'Kopeerimine ebaõnnestus.' : 'Copying failed.');
+        msgEl.style.opacity = '1';
+
+        setTimeout(() => {
+            msgEl.style.opacity = '0';
+        }, 2000);
     } catch (err) {
-        console.log('Sharing failed', err);
+        console.error('Sharing failed', err);
     }
+}
+
+async function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+    }
+
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.setAttribute('readonly', '');
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    let copied = false;
+    try {
+        copied = document.execCommand('copy');
+    } finally {
+        document.body.removeChild(textArea);
+    }
+    return copied;
 }
