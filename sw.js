@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gregor_opmann-portfolio-v3.10';
+const CACHE_NAME = 'gregor_opmann-portfolio-v3.11';
 
 const ASSETS_TO_CACHE = [
   './',
@@ -17,7 +17,9 @@ const ASSETS_TO_CACHE = [
   './sounds/yougotmail.mp3',
   './docs/loovtoo_kiituskiri.pdf',
   './docs/loovtoo_kiituskiri_hindamine.pdf',
-  './game.zip',
+  './games/game.zip',
+  './games/pong/pong.html',
+  './games/pong/pong-mobile.html',
   './docs/loovtoo_raport.pdf',
   './images/klassi_naljamees.png',
   './docs/srcdoc.pdf',
