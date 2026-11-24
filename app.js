@@ -1,6 +1,19 @@
   const dialUpAudio = new Audio('sounds/dialup_screech.mp3'); // I forgot this existed, went off page to make something else and got confused by my own easter egg...
   dialUpAudio.loop = true;
 
+  const translations = {
+    et: {
+      darkMode: 'Lülita tume režiim',
+      lightMode: 'Lülita hele režiim',
+      opening: 'Avamine...',
+    },
+    en: {
+      darkMode: 'Enable dark mode',
+      lightMode: 'Enable light mode',
+      opening: 'Opening...',
+    },
+  };
+
   let sessionStart = sessionStorage.getItem('sessionStartTime');
   if (!sessionStart) {
     sessionStart = Date.now();
@@ -43,7 +56,8 @@ function playMailSound(event) {
     const audio = document.getElementById('mailSound');
     
     link.style.opacity = '0.5';
-    link.innerText = 'Opening...'; 
+    const lang = localStorage.getItem('preferred-lang') || 'et';
+    link.innerText = translations[lang].opening;
 
     audio.play().catch(err => console.log("Audio play blocked"));
 
@@ -51,6 +65,7 @@ function playMailSound(event) {
         const hiddenLink = document.createElement('a');
         hiddenLink.href = link.href;
         hiddenLink.target = '_blank'; 
+        hiddenLink.rel = 'noopener noreferrer';
         
         document.body.appendChild(hiddenLink);
         hiddenLink.click();
@@ -68,7 +83,9 @@ function setLanguage(lang) {
     document.querySelectorAll('[data-lang]').forEach(el => {
         el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
     });
+    document.documentElement.lang = lang;
     localStorage.setItem('preferred-lang', lang);
+    updateDarkModeUI(document.body.classList.contains('dark-mode'));
 }
 
 const savedLang = localStorage.getItem('preferred-lang') || 'et';
@@ -80,17 +97,20 @@ function updateDarkModeUI(isDark) {
     const icon = document.getElementById('mode-icon');
     const etText = document.getElementById('mode-text');
     const enText = document.getElementById('mode-text-en');
+    const lang = localStorage.getItem('preferred-lang') || 'et';
     
     if (isDark) {
         document.body.classList.add('dark-mode');
         icon.textContent = '☀️';
         etText.textContent = 'Hele režiim';
         enText.textContent = 'Light Mode';
+        document.getElementById('dark-mode-btn').setAttribute('aria-label', translations[lang].lightMode);
     } else {
         document.body.classList.remove('dark-mode');
         icon.textContent = '🌙';
         etText.textContent = 'Tume režiim';
         enText.textContent = 'Dark Mode';
+        document.getElementById('dark-mode-btn').setAttribute('aria-label', translations[lang].darkMode);
     }
 }
 
@@ -104,6 +124,14 @@ const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') updateDarkModeUI(true);
 
 const bttButton = document.getElementById("backToTop");
+bttButton.addEventListener('click', scrollToTop);
+document.getElementById('dark-mode-btn').addEventListener('click', toggleDarkMode);
+document.getElementById('lang-et').addEventListener('click', () => setLanguage('et'));
+document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+document.getElementById('share-btn').addEventListener('click', sharePortfolio);
+document.querySelectorAll('.mail-link').forEach(link => {
+    link.addEventListener('click', playMailSound);
+});
 
 window.onscroll = function() {
     if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -146,16 +174,42 @@ async function sharePortfolio() {
     try {
         if (navigator.share) {
             await navigator.share(shareData);
-        } else {
-            await navigator.clipboard.writeText('https://gregoropmann.otset.ee');
-            msgEl.innerText = lang === 'et' ? 'Link kopeeritud lõikelauale!' : 'Link copied to clipboard!';
-            msgEl.style.opacity = '1';
-            
-            setTimeout(() => {
-                msgEl.style.opacity = '0';
-            }, 2000);
+            return;
         }
+
+        const copied = await copyToClipboard(shareData.url);
+        msgEl.innerText = copied
+            ? (lang === 'et' ? 'Link kopeeritud lõikelauale!' : 'Link copied to clipboard!')
+            : (lang === 'et' ? 'Kopeerimine ebaõnnestus.' : 'Copying failed.');
+        msgEl.style.opacity = '1';
+
+        setTimeout(() => {
+            msgEl.style.opacity = '0';
+        }, 2000);
     } catch (err) {
-        console.log('Sharing failed', err);
+        console.error('Sharing failed', err);
     }
+}
+
+async function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+    }
+
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.setAttribute('readonly', '');
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    let copied = false;
+    try {
+        copied = document.execCommand('copy');
+    } finally {
+        document.body.removeChild(textArea);
+    }
+    return copied;
 }

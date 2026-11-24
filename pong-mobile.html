@@ -324,9 +324,9 @@
         <div class="difficulty-container">
             <div class="difficulty-label">Difficulty</div>
             <div class="difficulty-buttons">
-                <button class="diff-btn" onclick="setDifficulty('easy')">Easy</button>
-                <button class="diff-btn active" onclick="setDifficulty('medium')">Medium</button>
-                <button class="diff-btn" onclick="setDifficulty('hard')">Hard</button>
+                <button type="button" class="diff-btn" data-difficulty="easy">Easy</button>
+                <button type="button" class="diff-btn active" data-difficulty="medium">Medium</button>
+                <button type="button" class="diff-btn" data-difficulty="hard">Hard</button>
             </div>
         </div>
 
@@ -461,12 +461,12 @@
             }
         }
 
-        function setDifficulty(level) {
+        function setDifficulty(level, button) {
             gameState.difficulty = level;
             
             // Update button states
             document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            button.classList.add('active');
             
             // Reset game
             resetGame();
@@ -571,6 +571,10 @@
             draw();
             requestAnimationFrame(gameLoop);
         }
+
+        document.querySelectorAll('[data-difficulty]').forEach(button => {
+            button.addEventListener('click', () => setDifficulty(button.dataset.difficulty, button));
+        });
 
         gameLoop();
 
